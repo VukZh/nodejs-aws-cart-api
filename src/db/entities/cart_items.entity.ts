@@ -1,9 +1,6 @@
 import { Column, Entity, JoinColumn, OneToOne, PrimaryColumn } from 'typeorm';
 import { Carts } from './carts.entity';
-enum StatusType {
-  OPEN = 'OPEN',
-  ORDERED = 'ORDERED',
-}
+
 @Entity()
 export class CartItems {
   @PrimaryColumn('uuid')

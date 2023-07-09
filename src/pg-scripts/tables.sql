@@ -1,5 +1,7 @@
 create type statusType as enum ('OPEN', 'ORDERED')
 
+create type paymentType
+
 create table carts (
 	id uuid primary key default uuid_generate_v4(),
 	user_id uuid,
@@ -15,6 +17,19 @@ create table cart_items (
     foreign key ("cart_id") references "carts" ("id")
 )
 
+create table orders (
+    id uuid primary key default uuid_generate_v4(),
+    user_id uuid,
+    cart_id uuid,
+    payment json,
+    delivery json,
+    comments text,
+    status statusType,
+    total integer,
+    foreign key ("cart_id") references "carts" ("id")
+)
+
 
 --drop table carts;
 --drop table cart_items;
+--drop table orders;
