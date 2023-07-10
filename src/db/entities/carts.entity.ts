@@ -1,9 +1,6 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { StatusType } from '../../cart';
 
-enum StatusType {
-  OPEN = 'OPEN',
-  ORDERED = 'ORDERED',
-}
 @Entity()
 export class Carts {
   @PrimaryGeneratedColumn('uuid')

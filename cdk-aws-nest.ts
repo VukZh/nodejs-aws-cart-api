@@ -6,7 +6,7 @@ import {
   NodejsFunction,
   NodejsFunctionProps,
 } from 'aws-cdk-lib/aws-lambda-nodejs';
-import {Duration} from "aws-cdk-lib";
+import { Duration } from 'aws-cdk-lib';
 
 const app = new cdk.App();
 
@@ -17,7 +17,12 @@ const stack = new cdk.Stack(app, 'LambdaNestStackVuk', {
 const sharedLambdaProps: Partial<NodejsFunctionProps> = {
   runtime: lambda.Runtime.NODEJS_18_X,
   environment: {
-    PRODUCT_AWS_REGION: 'eu-west-1',
+    PG_HOST: process.env.PG_HOST!,
+    PG_PORT: process.env.PG_PORT!,
+    PG_DATABASE: process.env.PG_DATABASE!,
+    PG_USERNAME: process.env.PG_USERNAME!,
+    PG_PASSWORD: process.env.PG_PASSWORD!,
+    PRODUCT_AWS_REGION: process.env.PRODUCT_AWS_REGION!,
   },
   bundling: {
     externalModules: [
