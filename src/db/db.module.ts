@@ -7,6 +7,9 @@ import { Products } from './entities/products.entity';
 import { Stocks } from './entities/stocks.entity';
 import * as process from 'process';
 
+import dotenv from "dotenv";
+dotenv.config();
+
 @Module({
   imports: [
     TypeOrmModule.forRoot({

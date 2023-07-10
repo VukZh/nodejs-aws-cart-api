@@ -8,6 +8,9 @@ import {
 } from 'aws-cdk-lib/aws-lambda-nodejs';
 import { Duration } from 'aws-cdk-lib';
 
+import dotenv from "dotenv";
+dotenv.config();
+
 const app = new cdk.App();
 
 const stack = new cdk.Stack(app, 'LambdaNestStackVuk', {
