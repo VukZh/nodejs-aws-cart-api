@@ -1,13 +1,13 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
-import { CartItems } from './entities/cart_items.entity';
+import { CartItems } from './entities/cartItems.entity';
 import { Carts } from './entities/carts.entity';
 import { Products } from './entities/products.entity';
 import { Stocks } from './entities/stocks.entity';
 import * as process from 'process';
 
-import dotenv from "dotenv";
+import dotenv from 'dotenv';
 dotenv.config();
 
 @Module({
@@ -22,6 +22,7 @@ dotenv.config();
       entities: [CartItems, Carts, Products, Stocks],
       logging: true,
       namingStrategy: new SnakeNamingStrategy(),
+      synchronize: true,
     }),
     TypeOrmModule.forFeature([CartItems, Carts, Products, Stocks]),
   ],

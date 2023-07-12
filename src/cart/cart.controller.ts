@@ -16,7 +16,9 @@ import { AppRequest, getUserIdFromRequest } from '../shared';
 
 import { calculateCartTotal } from './models-rules';
 import { CartService } from './services';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Carts')
 @Controller('api/profile/cart')
 export class CartController {
   constructor(

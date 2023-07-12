@@ -6,17 +6,17 @@ import { Cart, CartItem, StatusType } from '../models';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Carts } from '../../db/entities/carts.entity';
 import { Repository } from 'typeorm';
-import { CartItems } from '../../db/entities/cart_items.entity';
+import { CartItems } from '../../db/entities/cartItems.entity';
 import { Products } from '../../db/entities/products.entity';
 
 @Injectable()
 export class CartService {
   constructor(
     @InjectRepository(Carts)
-    @InjectRepository(CartItems)
-    @InjectRepository(Products)
     private readonly cartsRepo: Repository<Carts>,
+    @InjectRepository(CartItems)
     private readonly cartItemsRepo: Repository<CartItems>,
+    @InjectRepository(Products)
     private readonly productsRepo: Repository<Products>,
   ) {}
 
