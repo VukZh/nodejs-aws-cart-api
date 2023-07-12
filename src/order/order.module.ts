@@ -10,6 +10,6 @@ import { OrderController } from './order.controller';
   imports: [DbModule],
   providers: [OrderService],
   controllers: [OrderController],
-  // exports: [OrderService],
+  exports: [OrderService],
 })
 export class OrderModule {}

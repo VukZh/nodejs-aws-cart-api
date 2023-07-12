@@ -9,7 +9,7 @@ import { DbModule } from './db/db.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
-  imports: [TypeOrmModule.forRoot(), AuthModule, CartModule, DbModule],
+  imports: [AuthModule, CartModule, DbModule],
   controllers: [AppController],
   providers: [],
 })

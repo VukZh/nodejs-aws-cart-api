@@ -8,7 +8,7 @@ import {
 } from 'aws-cdk-lib/aws-lambda-nodejs';
 import { Duration } from 'aws-cdk-lib';
 
-import dotenv from "dotenv";
+import * as dotenv from 'dotenv';
 dotenv.config();
 
 const app = new cdk.App();
