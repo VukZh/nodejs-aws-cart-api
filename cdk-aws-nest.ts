@@ -34,6 +34,14 @@ const sharedLambdaProps: Partial<NodejsFunctionProps> = {
       '@nestjs/websockets/socket-module',
       'class-validator',
       '@nestjs/microservices/microservices-module',
+      'pg-native',
+      'sqlite3',
+      'pg-query-stream',
+      'oracledb',
+      'better-sqlite3',
+      'tedious',
+      'mysql',
+      'mysql2',
     ],
   },
 };
@@ -54,14 +62,14 @@ const api = new apiGateway.HttpApi(stack, 'NestAPIV', {
   },
 });
 
-api.addRoutes({
-  path: '/',
-  methods: [apiGateway.HttpMethod.ANY],
-  integration: new HttpLambdaIntegration(
-    'NestLambdaIntegrationRoot',
-    NestLambdaV,
-  ),
-});
+// api.addRoutes({
+//   path: '/',
+//   methods: [apiGateway.HttpMethod.ANY],
+//   integration: new HttpLambdaIntegration(
+//     'NestLambdaIntegrationRoot',
+//     NestLambdaV,
+//   ),
+// });
 
 api.addRoutes({
   path: '/{proxy+}',
