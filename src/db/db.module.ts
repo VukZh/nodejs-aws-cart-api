@@ -22,7 +22,7 @@ dotenv.config();
       entities: [CartItems, Carts, Products, Stocks],
       logging: true,
       namingStrategy: new SnakeNamingStrategy(),
-      synchronize: true,
+      // synchronize: true,
     }),
     TypeOrmModule.forFeature([CartItems, Carts, Products, Stocks]),
   ],

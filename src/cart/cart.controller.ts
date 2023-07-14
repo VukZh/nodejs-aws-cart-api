@@ -11,7 +11,7 @@ import {
 } from '@nestjs/common';
 
 // import { BasicAuthGuard, JwtAuthGuard } from '../auth';
-import { OrderService } from '../order';
+// import { OrderService } from '../order';
 import { AppRequest, getUserIdFromRequest } from '../shared';
 
 import { calculateCartTotal } from './models-rules';
@@ -23,7 +23,7 @@ import { ApiTags } from '@nestjs/swagger';
 export class CartController {
   constructor(
     private cartService: CartService,
-    private orderService: OrderService,
+    // private orderService: OrderService,
   ) {}
 
   // @UseGuards(JwtAuthGuard)
@@ -79,38 +79,38 @@ export class CartController {
 
   // @UseGuards(JwtAuthGuard)
   // @UseGuards(BasicAuthGuard)
-  @Post('checkout')
-  async checkout(@Req() req: AppRequest, @Body() body) {
-    const userId = getUserIdFromRequest(req);
-    const cart = await this.cartService.findByUserId(userId);
-    const cartItems = await this.cartService.findItems(userId);
-    const products = await this.cartService.findProducts();
-
-    if (!(cart && cartItems.length)) {
-      const statusCode = HttpStatus.BAD_REQUEST;
-      req.statusCode = statusCode;
-
-      return {
-        statusCode,
-        message: 'Cart is empty',
-      };
-    }
-
-    const { id: cartId } = cart;
-    const total = calculateCartTotal(cartItems, products);
-    const order = await this.orderService.create({
-      ...body, // TODO: validate and pick only necessary data
-      userId,
-      cartId,
-      cartItems,
-      total,
-    });
-    await this.cartService.removeByUserId(userId);
-
-    return {
-      statusCode: HttpStatus.OK,
-      message: 'OK',
-      data: { order },
-    };
-  }
+  // @Post('checkout')
+  // async checkout(@Req() req: AppRequest, @Body() body) {
+  //   const userId = getUserIdFromRequest(req);
+  //   const cart = await this.cartService.findByUserId(userId);
+  //   const cartItems = await this.cartService.findItems(userId);
+  //   const products = await this.cartService.findProducts();
+  //
+  //   if (!(cart && cartItems.length)) {
+  //     const statusCode = HttpStatus.BAD_REQUEST;
+  //     req.statusCode = statusCode;
+  //
+  //     return {
+  //       statusCode,
+  //       message: 'Cart is empty',
+  //     };
+  //   }
+  //
+  //   const { id: cartId } = cart;
+  //   const total = calculateCartTotal(cartItems, products);
+  //   const order = await this.orderService.create({
+  //     ...body, // TODO: validate and pick only necessary data
+  //     userId,
+  //     cartId,
+  //     cartItems,
+  //     total,
+  //   });
+  //   await this.cartService.removeByUserId(userId);
+  //
+  //   return {
+  //     statusCode: HttpStatus.OK,
+  //     message: 'OK',
+  //     data: { order },
+  //   };
+  // }
 }

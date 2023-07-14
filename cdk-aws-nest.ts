@@ -51,7 +51,7 @@ const NestLambdaV = new NodejsFunction(stack, 'NestLambdaVuk', {
   functionName: 'nestAWSVuk',
   entry: 'dist/main.js',
   handler: 'handler',
-  timeout: Duration.seconds(10),
+  timeout: Duration.minutes(15),
 });
 
 const api = new apiGateway.HttpApi(stack, 'NestAPIV', {
@@ -62,14 +62,14 @@ const api = new apiGateway.HttpApi(stack, 'NestAPIV', {
   },
 });
 
-// api.addRoutes({
-//   path: '/',
-//   methods: [apiGateway.HttpMethod.ANY],
-//   integration: new HttpLambdaIntegration(
-//     'NestLambdaIntegrationRoot',
-//     NestLambdaV,
-//   ),
-// });
+api.addRoutes({
+  path: '/',
+  methods: [apiGateway.HttpMethod.ANY],
+  integration: new HttpLambdaIntegration(
+    'NestLambdaIntegrationRoot',
+    NestLambdaV,
+  ),
+});
 
 api.addRoutes({
   path: '/{proxy+}',

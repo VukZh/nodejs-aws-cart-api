@@ -6,7 +6,6 @@ import { CartModule } from './cart/cart.module';
 import { AuthModule } from './auth/auth.module';
 import { OrderModule } from './order/order.module';
 import { DbModule } from './db/db.module';
-import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
   imports: [AuthModule, CartModule, DbModule],
