@@ -1,33 +1,24 @@
 import {
-  Controller,
-  Get,
-  Put,
   Body,
-  Req,
-  Post,
-  UseGuards,
+  Controller,
+  Delete,
+  Get,
   HttpStatus,
+  Put,
+  Req,
+  UseGuards,
 } from '@nestjs/common';
-
-import { v4 } from 'uuid';
-
-// import { BasicAuthGuard, JwtAuthGuard } from '../auth';
-import { getOrderIdFromRequest } from '../shared';
-
-// import { calculateCartTotal } from './models-rules';
 import { OrderService } from './services';
-import { ApiTags } from '@nestjs/swagger';
+import { BasicAuthGuard } from '../auth';
+import { AppRequest, getUserIdFromRequest } from '../shared';
 
-@ApiTags('Orders')
-@Controller('api/profile/order')
+@Controller('api/order')
 export class OrderController {
   constructor(private orderService: OrderService) {}
 
-  // @UseGuards(JwtAuthGuard)
-  // @UseGuards(BasicAuthGuard)
   @Get()
-  async findOrder(@Req() req) {
-    const order = await this.orderService.findById(getOrderIdFromRequest(req));
+  async findAll() {
+    const order = await this.orderService.findAll();
 
     return {
       statusCode: HttpStatus.OK,
@@ -36,40 +27,50 @@ export class OrderController {
     };
   }
 
-  // @UseGuards(JwtAuthGuard)
+  @Delete('/:id')
+  @UseGuards(BasicAuthGuard)
+  async delete(@Req() req: AppRequest) {
+    const order = await this.orderService.delete(req.params.id);
+    return {
+      statusCode: HttpStatus.OK,
+      message: 'OK',
+      data: { order },
+    };
+  }
+
+  @Get('/:id')
+  async findById(@Req() req: AppRequest) {
+    const order = await this.orderService.findById(req.params.id);
+
+    return {
+      statusCode: HttpStatus.OK,
+      message: 'OK',
+      data: { order },
+    };
+  }
+
   // @UseGuards(BasicAuthGuard)
+  // @Get()
+  // async findUserOrder(@Req() req: AppRequest) {
+  //   const order = await this.orderService.findByUserId(
+  //     getUserIdFromRequest(req),
+  //   );
+  //
+  //   return {
+  //     statusCode: HttpStatus.OK,
+  //     message: 'OK',
+  //     data: { order },
+  //   };
+  // }
+
+  @UseGuards(BasicAuthGuard)
   @Put()
-  async updateOrder(@Req() req, @Body() body) {
-    // TODO: validate body payload...
-    const orderId = getOrderIdFromRequest(req);
-    await this.orderService.update(orderId, body);
-    const order = await this.orderService.findById(orderId);
-
-    return {
-      statusCode: HttpStatus.OK,
-      message: 'OK',
-      data: {
-        order,
+  async createUserOrder(@Req() req: AppRequest, @Body() body) {
+    const order = await this.orderService.create(
+      {
+        ...body,
       },
-    };
-  }
-
-  // @UseGuards(JwtAuthGuard)
-  // @UseGuards(BasicAuthGuard)
-  @Post('checkout')
-  async createOrder(@Req() @Body() body) {
-    const id = v4();
-    const { data } = body;
-    const order = {
-      ...data,
-      id,
-    };
-    await this.orderService.create(order);
-
-    return {
-      statusCode: HttpStatus.OK,
-      message: 'OK',
-      data: { order },
-    };
+      getUserIdFromRequest(req),
+    );
   }
 }

@@ -1,130 +1,96 @@
 import { Injectable } from '@nestjs/common';
-
-import { v4 } from 'uuid';
-
-import { Cart, CartItem, StatusType } from '../models';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Carts } from '../../db/entities/carts.entity';
+import { Carts } from '../entity/Carts';
 import { Repository } from 'typeorm';
-import { CartItems } from '../../db/entities/cartItems.entity';
-import { Products } from '../../db/entities/products.entity';
+import { CartItems } from '../entity/CartItems';
 
 @Injectable()
 export class CartService {
   constructor(
-    @InjectRepository(Carts)
-    private readonly cartsRepo: Repository<Carts>,
+    @InjectRepository(Carts) private cartsRepository: Repository<Carts>,
     @InjectRepository(CartItems)
-    private readonly cartItemsRepo: Repository<CartItems>,
-    @InjectRepository(Products)
-    private readonly productsRepo: Repository<Products>,
+    private cartItemsRepository: Repository<CartItems>,
   ) {}
 
-  async findByUserId(userId: string): Promise<Cart> {
-    try {
-      return await this.cartsRepo.findOne({
-        where: {
-          userId: userId,
-        },
-      });
-    } catch (e) {
-      return e.message;
-    }
+  async findByUserId(userId: string): Promise<Carts> {
+    return await this.cartsRepository.findOne({
+      relations: {
+        items: true,
+      },
+      where: { user_id: userId, status: 'OPEN' },
+    });
   }
 
-  async createByUserId(userId: string): Promise<Cart> {
-    try {
-      const id = v4();
-      const userCart = {
-        id,
-        userId,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        status: StatusType.OPEN,
-      };
-      await this.cartsRepo.insert(userCart);
+  async createByUserId(userId: string) {
+    return await this.cartsRepository.save({
+      user_id: userId,
+      items: [],
+    });
+  }
+
+  async findOrCreateByUserId(userId: string): Promise<Carts> {
+    const userCart = await this.findByUserId(userId);
+    if (userCart) {
       return userCart;
-    } catch (e) {
-      return e.message;
     }
+
+    return this.createByUserId(userId);
   }
 
-  async findOrCreateByUserId(userId: string): Promise<Cart> {
-    try {
-      const userCart = await this.findByUserId(userId);
-      if (userCart) {
-        return userCart;
-      }
-      return this.createByUserId(userId);
-    } catch (e) {
-      return e.message;
-    }
-  }
+  async updateByUserId(userId: string, { product, count }): Promise<Carts> {
+    const { id, ...rest } = await this.findOrCreateByUserId(userId);
 
-  async updateByUserId(userId: string, items: Array<CartItem>): Promise<Cart> {
-    try {
-      const { id, ...rest } = await this.findOrCreateByUserId(userId);
-      const updatedCart = {
-        id,
-        ...rest,
-        updatedAt: new Date(),
-      };
-      await this.cartsRepo.update({ id }, updatedCart);
-      for await (const item of items) {
-        const cartItem = await this.cartItemsRepo.findOne({
-          where: {
-            cartId: id,
+    const cartItem = await this.cartItemsRepository.findOne({
+      where: { cart_id: id, product_id: product.id },
+    });
+    if (cartItem) {
+      if (count === 0) {
+        await this.cartItemsRepository.delete(cartItem.id);
+        return await this.cartsRepository.findOne({
+          relations: {
+            items: true,
           },
+          where: { id },
         });
-        if (cartItem) {
-          await this.cartItemsRepo.update({ cartId: id }, cartItem);
-        } else {
-          await this.cartItemsRepo.insert({ ...item, cartId: id });
-        }
       }
-      return updatedCart;
-    } catch (e) {
-      return e.message;
-    }
-  }
-
-  async removeByUserId(userId): Promise<Cart> {
-    try {
-      const cart = await this.findByUserId(userId);
-      await this.cartsRepo.update(userId, {
-        ...cart,
-        status: StatusType.ORDERED,
+      await this.cartItemsRepository.update(cartItem.id, {
+        count: count,
       });
-      return {
-        ...cart,
-        status: StatusType.ORDERED,
-      };
-    } catch (e) {
-      return e.message;
-    }
-  }
-
-  async findItems(userId): Promise<Array<CartItem>> {
-    try {
-      const userCart = await this.findOrCreateByUserId(userId);
-      const { id } = userCart;
-      const cartItems = this.cartItemsRepo.find({
-        where: {
-          cartId: id,
+      return await this.cartsRepository.findOne({
+        relations: {
+          items: true,
         },
+        where: { id },
       });
-      return cartItems;
-    } catch (e) {
-      return e.message;
     }
+    await this.cartItemsRepository.save({
+      cart_id: id,
+      product_id: product.id,
+      price: product.price,
+      count: count,
+    });
+
+    return await this.cartsRepository.findOne({
+      relations: {
+        items: true,
+      },
+      where: { id },
+    });
   }
 
-  async findProducts(): Promise<Array<Products>> {
-    try {
-      const products = await this.productsRepo.find();
-      return products;
-    } catch (e) {
-      return e.message;
+  async removeByUserId(userId): Promise<void> {
+    await this.cartsRepository.delete({ user_id: userId });
+  }
+
+  async setOrderStatus(userId: string, status: string): Promise<Carts> {
+    const cart = await this.findByUserId(userId);
+    if (!cart) {
+      throw new Error('Cart does not exist.');
     }
+
+    return await this.cartsRepository.save({
+      ...cart,
+      status,
+    });
   }
 }
