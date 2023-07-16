@@ -1,5 +1,5 @@
-import { Carts } from '../entity/Carts';
-import { CartItems } from '../entity/CartItems';
+import { Carts } from '../../entities/Carts';
+import { CartItems } from '../../entities/CartItems';
 
 /**
  * @param {Carts} cart

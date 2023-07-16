@@ -15,7 +15,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { User } from '../../users/entity/User';
+import { User } from '../users/entity/User';
 import { CartItems } from './CartItems';
 
 @Entity()

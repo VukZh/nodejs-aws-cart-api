@@ -17,8 +17,8 @@ import {
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Carts } from '../../cart/entity/Carts';
-import { User } from '../../users/entity/User';
+import { Carts } from './Carts';
+import { User } from '../users/entity/User';
 
 @Entity()
 export class Orders {
