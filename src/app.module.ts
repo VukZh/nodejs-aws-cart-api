@@ -7,7 +7,7 @@ import { CartModule } from './cart/cart.module';
 import { AuthModule } from './auth/auth.module';
 import { OrderModule } from './order/order.module';
 import { Carts } from './cart/entity/Carts';
-import { Orders } from './order/entryty/Order';
+import { Orders } from './order/entity/Order';
 import { CartItems } from './cart/entity/CartItems';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import 'dotenv/config';

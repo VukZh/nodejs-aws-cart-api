@@ -23,7 +23,7 @@ export class CartItems {
   @Column({ type: 'uuid', nullable: false })
   product_id: string;
 
-  @Column({ type: 'integer', nullable: false, default: 1 })
+  @Column({ type: "decimal", precision: 10, scale: 2, default: 1, nullable: false })
   price: number;
 
   @Column({ type: 'integer', nullable: false })

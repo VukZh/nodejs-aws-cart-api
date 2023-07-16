@@ -33,10 +33,10 @@ export class Carts {
   @OneToMany(() => CartItems, (cartItems) => cartItems.cart)
   items: CartItems[];
 
-  @CreateDateColumn({ type: 'timestamp', nullable: false })
+  @CreateDateColumn({ type: 'timestamp', nullable: true })
   created_at: Date;
 
-  @UpdateDateColumn({ type: 'timestamp', nullable: false })
+  @UpdateDateColumn({ type: 'timestamp', nullable: true })
   updated_at: Date;
 
   @Column({
