@@ -7,7 +7,7 @@ import { Handler } from 'aws-lambda';
 let server: Handler;
 
 async function bootstrap(): Promise<any> {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, { cors: true });
   await app.init();
 
   const expressApp = app.getHttpAdapter().getInstance();

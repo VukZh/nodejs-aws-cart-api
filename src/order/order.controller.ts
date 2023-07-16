@@ -12,7 +12,7 @@ import { OrderService } from './services';
 import { BasicAuthGuard } from '../auth';
 import { AppRequest, getUserIdFromRequest } from '../shared';
 
-@Controller('api/order')
+@Controller('api/profile/order')
 export class OrderController {
   constructor(private orderService: OrderService) {}
 
@@ -28,7 +28,7 @@ export class OrderController {
   }
 
   @Delete('/:id')
-  @UseGuards(BasicAuthGuard)
+  // @UseGuards(BasicAuthGuard)
   async delete(@Req() req: AppRequest) {
     const order = await this.orderService.delete(req.params.id);
     return {
@@ -38,9 +38,23 @@ export class OrderController {
     };
   }
 
-  @Get('/:id')
-  async findById(@Req() req: AppRequest) {
-    const order = await this.orderService.findById(req.params.id);
+  // @Get('/:id')
+  // async findById(@Req() req: AppRequest) {
+  //   const order = await this.orderService.findById(req.params.id);
+  //
+  //   return {
+  //     statusCode: HttpStatus.OK,
+  //     message: 'OK',
+  //     data: { order },
+  //   };
+  // }
+
+  // @UseGuards(BasicAuthGuard)
+  @Get()
+  async findUserOrder(@Req() req: AppRequest) {
+    const order = await this.orderService.findByUserId(
+      getUserIdFromRequest(req),
+    );
 
     return {
       statusCode: HttpStatus.OK,
@@ -50,20 +64,6 @@ export class OrderController {
   }
 
   // @UseGuards(BasicAuthGuard)
-  // @Get()
-  // async findUserOrder(@Req() req: AppRequest) {
-  //   const order = await this.orderService.findByUserId(
-  //     getUserIdFromRequest(req),
-  //   );
-  //
-  //   return {
-  //     statusCode: HttpStatus.OK,
-  //     message: 'OK',
-  //     data: { order },
-  //   };
-  // }
-
-  @UseGuards(BasicAuthGuard)
   @Put()
   async createUserOrder(@Req() req: AppRequest, @Body() body) {
     const order = await this.orderService.create(

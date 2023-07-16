@@ -10,10 +10,19 @@ create table carts (
 	status statusType
 )
 
+-- create table cart_items (
+--     cart_id uuid primary key,
+--     product_id uuid,
+--     count integer,
+--     foreign key ("cart_id") references "carts" ("id")
+-- )
+
 create table cart_items (
-    cart_id uuid primary key,
+    id uuid primary key default uuid_generate_v4(),
+    cart_id uuid,
     product_id uuid,
     count integer,
+    price integer,
     foreign key ("cart_id") references "carts" ("id")
 )
 
