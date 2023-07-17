@@ -26,7 +26,7 @@ export const handler = async (event: any, context: any) => {
 //
 // import { AppModule } from './app.module';
 //
-// const port = process.env.PORT || 4000;
+// const port = process.env.PORT || 3000;
 //
 // async function bootstrap() {
 //   const app = await NestFactory.create(AppModule);
