@@ -1,5 +1,3 @@
-#multistages - 545MB
-
 FROM node:15-alpine AS development
 WORKDIR /app
 COPY package*.json ./
@@ -13,6 +11,6 @@ COPY package*.json ./
 RUN npm install --only=production
 COPY . .
 COPY --from=development /app/dist ./dist
-EXPOSE 3000
+EXPOSE 3080
 CMD ["node", "dist/main"]
 
